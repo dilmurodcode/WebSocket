@@ -1,0 +1,28 @@
+<!-- templates/test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notification Test</title>
+</head>
+<body>
+    <h1>Real-time Notifications</h1>
+    <ul id="notifications"></ul>
+
+    <script>
+        const socket = new WebSocket("ws://localhost:8000/ws/notifications/");
+
+        socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log("New Notification:", data);
+
+            const li = document.createElement("li");
+            li.innerText = `${data.title}: ${data.description}`;
+            document.getElementById("notifications").appendChild(li);
+        };
+
+        socket.onopen = () => console.log("WebSocket Connected");
+        socket.onerror = (error) => console.error("WebSocket Error:", error);
+        socket.onclose = () => console.log("WebSocket Closed");
+    </script>
+</body>
+</html>
